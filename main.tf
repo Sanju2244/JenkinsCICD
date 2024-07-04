@@ -3,8 +3,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "example" {
-  bucket = "jenkins-resource-test-bucket"  
-  acl    = "private"
+  bucket = "jenkins-resource-test-bucket" 
 
   tags = {
     Name        = "jenkins-resource-test-bucket"
