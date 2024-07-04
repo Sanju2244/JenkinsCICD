@@ -1,9 +1,23 @@
-module "ec2_instance" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
 
-  name = "ec2demo"
+  required_version = ">= 1.0.0"
+}
 
-  instance_type          = "t2.micro"
-  key_name               = "awskey"
+provider "aws" {
+  region = "us-east-1"
+}
 
+resource "aws_instance" "example" {
+  ami           = "ami-01b799c439fd5516a" 
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "example-instance"
+  }
 }
