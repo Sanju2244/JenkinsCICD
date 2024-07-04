@@ -6,11 +6,13 @@ pipeline{
     stages{
         stage('checkout from GIT'){
             steps{
-               git branch: 'main', credentialsId: 'testpipeline', url: 'https://github.com/satyamounika11/JenkinsCICD.git'
+               git branch: 'main', credentialsId: 'GIT', url: 'https://github.com/Sanju2244/JenkinsCICD.git'
             }
         }
         stage('Terraform Init'){
             steps{
+                sh 'mkdir /var/sanjay'
+                sh 'cd /var/sanjay/'
                 sh 'terraform init'
             }
         }
