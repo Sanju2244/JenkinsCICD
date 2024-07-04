@@ -13,7 +13,7 @@ pipeline{
             steps{
                 sh 'mkdir /var/sanjay'
                 sh 'cd /var/sanjay/'
-                sh 'terraform init'
+                sh 'terraform init -upgrade'
             }
         }
         stage('Terraform Plan'){
