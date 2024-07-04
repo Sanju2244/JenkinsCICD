@@ -1,54 +1,34 @@
-pipeline {
-
-    parameters {
-        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
-    } 
-    environment {
-        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+pipeline{
+    agent any
+    tools {
+        terraform 'terraform'
     }
-
-   agent  any
-    stages {
-        stage('checkout') {
-            steps {
-                 script{
-                        dir("terraform")
-                        {
-                            git "https://github.com/Sanju2244/JenkinsCICD.git"
-                        }
-                    }
-                }
-            }
-
-        stage('Plan') {
-            steps {
-                sh 'pwd;cd terraform/ ; terraform init'
-                sh "pwd;cd terraform/ ; terraform plan -out tfplan"
-                sh 'pwd;cd terraform/ ; terraform show -no-color tfplan > tfplan.txt'
+    stages{
+        stage('checkout from GIT'){
+            steps{
+               git branch: 'main', credentialsId: 'testpipeline', url: 'https://github.com/satyamounika11/JenkinsCICD.git'
             }
         }
-        stage('Approval') {
-           when {
-               not {
-                   equals expected: true, actual: params.autoApprove
-               }
-           }
-
-           steps {
-               script {
-                    def plan = readFile 'terraform/tfplan.txt'
-                    input message: "Want to apply the plan?",
-                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
-               }
-           }
-       }
-
-        stage('Apply') {
-            steps {
-                sh "pwd;cd terraform/ ; terraform apply -input=false tfplan"
+        stage('Terraform Init'){
+            steps{
+                sh 'terraform init'
             }
         }
+        stage('Terraform Plan'){
+            steps{
+                sh 'terraform plan'
+            }
+        }
+         stage('Terraform Apply'){
+            steps{
+                sh 'terraform apply --auto-approve'
+            }
+        }
+        // stage('Terraform Destroy'){
+        //     steps{
+        //         sh 'terraform destroy --auto-approve'
+        //     }
+        // }
+       
     }
-
-  }
+}
