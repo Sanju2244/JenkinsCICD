@@ -11,8 +11,6 @@ pipeline{
         }
         stage('Terraform Init'){
             steps{
-                sh 'mkdir /var/sanjay'
-                sh 'cd /var/sanjay/'
                 sh 'terraform init -upgrade'
             }
         }
